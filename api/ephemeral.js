@@ -21,14 +21,19 @@ export default async function handler(req) {
   let body = {};
   try { body = await req.json(); } catch { body = {}; }
 
-  // Full instruction string from Replit is best; otherwise use a calm fallback
-  const instructions =
-    body.instructions ||
-    "You are a patient English tutor. SPEAK SLOWLY and CLEARLY. Keep replies to 1–2 sentences. Pause briefly between sentences (~300 ms). Adapt difficulty to the student's CEFR level. Encourage, correct gently, and avoid long monologues.";
+// Replit is the source of truth.
+// Vercel should NOT inject persona, language, voice, or speed.
+if (!body.instructions) {
+  return new Response(
+    JSON.stringify({ error: "Missing instructions from client" }),
+    { status: 400, headers: { "Content-Type": "application/json", ...CORS } }
+  );
+}
 
-  const voice = body.voice || "alloy";
-  const speed = (typeof body.speed === "number") ? body.speed : 0.9;     // calmer than default
-  const temperature = (typeof body.temperature === "number") ? body.temperature : 0.7;
+const instructions = body.instructions;
+const voice = body.voice;           // must be provided by client
+const speed = body.speed;           // must be provided by client
+const temperature = body.temperature ?? 0.7;
 
   // Accept BOTH camelCase and snake_case from the client
   const providedTurnDetection = body.turnDetection || body.turn_detection || null;
