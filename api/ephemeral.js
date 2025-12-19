@@ -21,18 +21,14 @@ export default async function handler(req) {
   let body = {};
   try { body = await req.json(); } catch { body = {}; }
 
-// Replit is the source of truth.
-// Vercel should NOT inject persona, language, voice, or speed.
-if (!body.instructions) {
-  return new Response(
-    JSON.stringify({ error: "Missing instructions from client" }),
-    { status: 400, headers: { "Content-Type": "application/json", ...CORS } }
-  );
-}
+// Replit is the source of truth, but Vercel must be resilient
+const instructions =
+  typeof body.instructions === "string" && body.instructions.trim().length > 0
+    ? body.instructions
+    : "You are Clara, a warm, encouraging AI language tutor. You ALWAYS speak ONLY in the target language selected by the student. Keep replies to 1–2 short sentences. Ask one question per turn.";
 
-const instructions = body.instructions;
-const voice = body.voice;           // must be provided by client
-const speed = body.speed;           // must be provided by client
+const voice = typeof body.voice === "string" ? body.voice : "alloy";
+const speed = typeof body.speed === "number" ? body.speed : 1.0;
 const temperature = body.temperature ?? 0.7;
 
   // Accept BOTH camelCase and snake_case from the client
