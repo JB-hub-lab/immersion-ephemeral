@@ -27,7 +27,7 @@ const instructions =
     ? body.instructions
     : "You are Clara, a warm, encouraging AI language tutor. You ALWAYS speak ONLY in the target language selected by the student. Keep replies to 1–2 short sentences. Ask one question per turn.";
 
-const voice = typeof body.voice === "string" ? body.voice : "alloy";
+const voice = typeof body.voice === "string" ? body.voice : "marin";
 const speed = typeof body.speed === "number" ? body.speed : 1.0;
 const temperature = body.temperature ?? 0.7;
 
@@ -45,14 +45,14 @@ const temperature = body.temperature ?? 0.7;
   };
 
   const sessionConfig = {
-    model: "gpt-4o-mini-realtime-preview-2024-12-17",
+    model: typeof body.model === "string" ? body.model : "gpt-realtime-mini",
     instructions,
     voice,
     output_audio_format: "pcm16",
     modalities: ["text", "audio"],
     temperature,
     speed,
-    turn_detection: providedTurnDetection || defaultTurnDetection,
+    turn_detection: providedTurnDetection !== undefined ? providedTurnDetection : defaultTurnDetection,
   };
 
   try {
