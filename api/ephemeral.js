@@ -21,20 +21,12 @@ export default async function handler(req) {
       ? body.instructions
       : "You are Clara, a warm, encouraging AI language tutor. You ALWAYS speak ONLY in the target language selected by the student. Keep replies to 1–2 short sentences. Ask one question per turn.";
 
-  const voice = typeof body.voice === "string" ? body.voice : "marin";
   const model = typeof body.model === "string" ? body.model : "gpt-realtime-mini";
 
   const sessionConfig = {
     type: "realtime",
     model,
     instructions,
-    turn_detection: {
-      type: "server_vad",
-      threshold: 0.6,
-      prefix_padding_ms: 300,
-      silence_duration_ms: 350,
-      create_response: true,
-    },
   };
 
   try {
