@@ -33,11 +33,10 @@ export default async function handler(req) {
     interrupt_response: true,
   };
 
-  const sessionConfig = {
+   const sessionConfig = {
     type: "realtime",
     model: typeof body.model === "string" ? body.model : "gpt-realtime-mini",
     instructions,
-    voice,
     output_audio_format: "pcm16",
     modalities: ["text", "audio"],
     temperature,
