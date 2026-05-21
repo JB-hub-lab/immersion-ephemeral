@@ -28,7 +28,6 @@ export default async function handler(req) {
     type: "realtime",
     model,
     instructions,
-    voice,
     turn_detection: {
       type: "server_vad",
       threshold: 0.6,
