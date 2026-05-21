@@ -37,7 +37,6 @@ export default async function handler(req) {
     type: "realtime",
     model: typeof body.model === "string" ? body.model : "gpt-realtime-mini",
     instructions,
-    output_audio_format: "pcm16",
     modalities: ["text", "audio"],
     temperature,
     turn_detection: providedTurnDetection !== undefined ? providedTurnDetection : defaultTurnDetection,
