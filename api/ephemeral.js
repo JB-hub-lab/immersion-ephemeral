@@ -20,26 +20,22 @@ export default async function handler(req) {
     typeof body.instructions === "string" && body.instructions.trim().length > 0
       ? body.instructions
       : "You are Clara, a warm, encouraging AI language tutor. You ALWAYS speak ONLY in the target language selected by the student. Keep replies to 1–2 short sentences. Ask one question per turn.";
+
   const voice = typeof body.voice === "string" ? body.voice : "marin";
-  const temperature = body.temperature ?? 0.7;
+  const model = typeof body.model === "string" ? body.model : "gpt-realtime-mini";
 
-  const providedTurnDetection = body.turnDetection || body.turn_detection || null;
-  const defaultTurnDetection = {
-    type: "server_vad",
-    threshold: 0.6,
-    prefix_padding_ms: 300,
-    silence_duration_ms: 350,
-    create_response: true,
-    interrupt_response: true,
-  };
-
-   const sessionConfig = {
+  const sessionConfig = {
     type: "realtime",
-    model: typeof body.model === "string" ? body.model : "gpt-realtime-mini",
+    model,
     instructions,
-    modalities: ["text", "audio"],
-    temperature,
-    turn_detection: providedTurnDetection !== undefined ? providedTurnDetection : defaultTurnDetection,
+    voice,
+    turn_detection: {
+      type: "server_vad",
+      threshold: 0.6,
+      prefix_padding_ms: 300,
+      silence_duration_ms: 350,
+      create_response: true,
+    },
   };
 
   try {
