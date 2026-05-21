@@ -28,7 +28,6 @@ const instructions =
     : "You are Clara, a warm, encouraging AI language tutor. You ALWAYS speak ONLY in the target language selected by the student. Keep replies to 1–2 short sentences. Ask one question per turn.";
 
 const voice = typeof body.voice === "string" ? body.voice : "marin";
-const speed = typeof body.speed === "number" ? body.speed : 1.0;
 const temperature = body.temperature ?? 0.7;
 
   // Accept BOTH camelCase and snake_case from the client
@@ -51,7 +50,6 @@ const temperature = body.temperature ?? 0.7;
     output_audio_format: "pcm16",
     modalities: ["text", "audio"],
     temperature,
-    speed,
     turn_detection: providedTurnDetection !== undefined ? providedTurnDetection : defaultTurnDetection,
   };
 
@@ -68,7 +66,9 @@ const temperature = body.temperature ?? 0.7;
     // Add a small version header so you can confirm you’re on the new code
     const headers = new Headers({ "Content-Type": "application/json", ...CORS, "x-immersion-version": "v2025-11-01" });
 
-    return new Response(r.body, { status: r.status, headers });
+   const text = await r.text();
+console.log("[OpenAI Realtime Response]", r.status, text);
+return new Response(text, { status: r.status, headers });
   } catch (err) {
     console.error("[Ephemeral] Error:", err);
     return new Response(JSON.stringify({ error: "failed to create session" }), {
