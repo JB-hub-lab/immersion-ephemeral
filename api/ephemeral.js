@@ -1,18 +1,25 @@
 // /api/ephemeral.js
 export const config = { runtime: "edge" };
+
+const ALLOWED_ORIGIN = "https://hablalo24.com";
+
 const CORS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Vary": "Origin",
 };
+
 export default async function handler(req) {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: CORS });
   }
+
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
   if (!OPENAI_API_KEY) {
     return new Response("Missing OPENAI_API_KEY", { status: 500, headers: CORS });
   }
+
   let body = {};
   try { body = await req.json(); } catch { body = {}; }
 
@@ -38,13 +45,16 @@ export default async function handler(req) {
       },
       body: JSON.stringify({ session: sessionConfig }),
     });
+
     const text = await r.text();
     console.log("[OpenAI Realtime Response]", r.status, text);
+
     const headers = new Headers({
       "Content-Type": "application/json",
       ...CORS,
       "x-immersion-version": "v2026-05-20-ga",
     });
+
     return new Response(text, { status: r.status, headers });
   } catch (err) {
     console.error("[Ephemeral] Error:", err);
