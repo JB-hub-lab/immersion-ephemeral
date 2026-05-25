@@ -1,4 +1,4 @@
-// /api/ephemeral.js
+// /api/ephemeral.js v2
 export const config = { runtime: "edge" };
 
 const ALLOWED_ORIGIN = "https://hablalo24.com";
