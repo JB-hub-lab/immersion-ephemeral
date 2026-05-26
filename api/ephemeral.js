@@ -34,7 +34,6 @@ export default async function handler(req) {
   type: "realtime",
   model,
   instructions,
-  input_audio_transcription: { model: "whisper-1" },
 };
 
   try {
