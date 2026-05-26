@@ -31,10 +31,11 @@ export default async function handler(req) {
   const model = typeof body.model === "string" ? body.model : "gpt-realtime-mini";
 
   const sessionConfig = {
-    type: "realtime",
-    model,
-    instructions,
-  };
+  type: "realtime",
+  model,
+  instructions,
+  input_audio_transcription: { model: "whisper-1" },
+};
 
   try {
     const r = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
